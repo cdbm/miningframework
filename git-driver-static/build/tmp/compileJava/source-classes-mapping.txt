@@ -1,6 +1,8 @@
+gitManager/MergeManager.java
+ gitManager.MergeManager
+buildManager/BuildGenerator.java
+ buildManager.BuildGenerator
 app/StaticAnalysisMerge.java
  app.StaticAnalysisMerge
 app/Main.java
  app.Main
-buildManager/BuildGenerator.java
- buildManager.BuildGenerator

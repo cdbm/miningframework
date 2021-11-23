@@ -1,6 +1,7 @@
 package buildManager;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
@@ -14,6 +15,12 @@ public class BuildGenerator {
         Process proc  = Runtime.getRuntime().exec("gradlew.bat build");
         this.watchProcess(proc);
         return proc;
+    }
+
+    public File getBuildJar() {
+        File buildJarFolder = new File("./build/libs");
+        File buildJar = buildJarFolder.listFiles()[0];
+        return buildJar;
     }
 
     private void watchProcess(Process proc) throws IOException {
