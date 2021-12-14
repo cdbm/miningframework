@@ -1,4 +1,4 @@
-package gitManager;
+/*package gitManager;
 
 import groovy.lang.Tuple2;
 import project.MergeCommit;
@@ -85,4 +85,4 @@ public class ModifiedLinesCollector extends ModifiedLinesCollectorAbstract {
 
     }
 
-}
+}*/
