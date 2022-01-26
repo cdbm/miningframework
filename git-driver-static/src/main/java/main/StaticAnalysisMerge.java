@@ -4,8 +4,10 @@ import arguments.ArgsParser;
 import buildManager.BuildGenerator;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import gitManager.CollectedMergeMethodData;
 import gitManager.CommitManager;
 import gitManager.MergeManager;
+import gitManager.ModifiedLinesManager;
 import project.MergeCommit;
 import project.Project;
 import app.MiningFramework;
@@ -15,6 +17,7 @@ import util.FileManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class StaticAnalysisMerge {
 
@@ -33,31 +36,20 @@ public class StaticAnalysisMerge {
         BuildGenerator buildGenerator = new BuildGenerator();
         CommitManager commitManager = new CommitManager(this.args);
         Project project = new Project("projetct", System.getProperty("user.dir"));
+        ModifiedLinesManager modifiedLinesManager = new ModifiedLinesManager();
 
 
         try {
-            Class injectorClass = appArguments.getInjector();
-            Injector injector = Guice.createInjector((com.google.inject.Module) injectorClass.newInstance());
 
             MergeCommit mergeCommit = commitManager.buildMergeCommit();
-            System.out.println(mergeCommit.getSHA());
-            System.out.println(mergeCommit.getRightSHA());
+            List<CollectedMergeMethodData> collectedMergeMethodDataList = modifiedLinesManager.collectData(project, mergeCommit);
 
-            MiningFramework framework = injector.getInstance(MiningFramework.class);
-            framework.setArguments(appArguments);
-
-            FileManager.createOutputFiles(appArguments.getOutputPath(), appArguments.isPushCommandActive());
-            framework.collectModifiedLines(project, mergeCommit);
 
             Process buildGeneration = buildGenerator.generateBuild();
             buildGeneration.waitFor();
             File buildJar = buildGenerator.getBuildJar();
             System.out.println("Build jar file: " + buildJar);
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
             e.printStackTrace();
         }
     }

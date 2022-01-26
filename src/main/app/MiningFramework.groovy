@@ -1,6 +1,7 @@
 package app
 
 import com.google.inject.Inject
+import services.dataCollectors.modifiedLinesCollector.ModifiedLinesCollector
 
 import java.util.concurrent.BlockingQueue
 import java.util.concurrent.LinkedBlockingQueue
@@ -53,6 +54,11 @@ class MiningFramework {
         } catch (UnstagedChangesException e) { // framework defined errors
             println e.message;
         }
+    }
+
+    public void collectModifiedLines(Project project, MergeCommit mergeCommit) {
+        ModifiedLinesCollector dataCollector = new ModifiedLinesCollector();
+        dataCollector.collectData(project, mergeCommit);
     }
 
     BlockingQueue<Project> populateProjectsQueue(List<Project> projectList) {
