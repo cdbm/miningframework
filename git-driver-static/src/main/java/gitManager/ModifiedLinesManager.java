@@ -1,6 +1,5 @@
 package gitManager;
 
-import com.google.common.collect.Sets;
 import groovy.lang.Tuple2;
 import project.MergeCommit;
 import project.Project;
@@ -31,7 +30,6 @@ public class ModifiedLinesManager {
             boolean fileHasMutuallyModifiedMethods = !mutuallyModifiedMethods.isEmpty();
             if (fileHasMutuallyModifiedMethods) {
                 String className = TypeNameHelper.getFullyQualifiedName(project, filePath, mergeCommit.getAncestorSHA());
-                //revisionsCollector.collectDataFromFile(project, mergeCommit, filePath);
 
                 for (ModifiedMethod method : allModifiedMethods) {
                     Tuple2<ModifiedMethod, ModifiedMethod> leftAndRightMethods = mutuallyModifiedMethods.get(method.getSignature());

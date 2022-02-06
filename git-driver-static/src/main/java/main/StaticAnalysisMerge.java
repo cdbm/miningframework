@@ -1,23 +1,18 @@
 package main;
 
-import arguments.ArgsParser;
 import buildManager.BuildGenerator;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import csvManager.CsvManager;
 import gitManager.CollectedMergeMethodData;
 import gitManager.CommitManager;
 import gitManager.MergeManager;
 import gitManager.ModifiedLinesManager;
 import project.MergeCommit;
 import project.Project;
-import app.MiningFramework;
-import arguments.ArgsParser;
-import arguments.Arguments;
-import util.FileManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
 
 public class StaticAnalysisMerge {
 
@@ -28,22 +23,20 @@ public class StaticAnalysisMerge {
     }
 
     public void run() {
-        ArgsParser argsParser = new ArgsParser();
-        Arguments appArguments = argsParser.parse(new String[0]);
-
-
-        MergeManager mergeManager = new MergeManager();
+        //MergeManager mergeManager = new MergeManager();
         BuildGenerator buildGenerator = new BuildGenerator();
         CommitManager commitManager = new CommitManager(this.args);
-        Project project = new Project("projetct", System.getProperty("user.dir"));
+        Project project = new Project("project", System.getProperty("user.dir"));
         ModifiedLinesManager modifiedLinesManager = new ModifiedLinesManager();
 
 
         try {
 
             MergeCommit mergeCommit = commitManager.buildMergeCommit();
-            List<CollectedMergeMethodData> collectedMergeMethodDataList = modifiedLinesManager.collectData(project, mergeCommit);
 
+            List<CollectedMergeMethodData> collectedMergeMethodDataList = modifiedLinesManager.collectData(project, mergeCommit);
+            CsvManager csvManager = new CsvManager();
+            csvManager.transformCollectedDataIntoCsv(collectedMergeMethodDataList);
 
             Process buildGeneration = buildGenerator.generateBuild();
             buildGeneration.waitFor();
