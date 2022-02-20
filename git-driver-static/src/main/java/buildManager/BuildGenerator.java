@@ -19,8 +19,14 @@ public class BuildGenerator {
 
     public File getBuildJar() {
         File buildJarFolder = new File("./build/libs");
-        File buildJar = buildJarFolder.listFiles()[0];
-        return buildJar;
+        File returnFile = null;
+        for(File file : buildJarFolder.listFiles()) {
+            if(!file.getName().contains("boot")){
+                returnFile = file;
+            }
+        }
+
+        return returnFile;
     }
 
     private void watchProcess(Process proc) throws IOException {

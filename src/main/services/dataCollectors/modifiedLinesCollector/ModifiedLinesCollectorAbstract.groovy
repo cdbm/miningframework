@@ -27,7 +27,7 @@ abstract class ModifiedLinesCollectorAbstract implements DataCollector {
 
     abstract def void createExperimentalDataFiles(String outputPath)
 
-    protected void collectMethodData(Tuple2<ModifiedMethod, ModifiedMethod> leftAndRightMethods, ModifiedMethod mergeMethod, Project project, MergeCommit mergeCommit, String className) {
+    void collectMethodData(Tuple2<ModifiedMethod, ModifiedMethod> leftAndRightMethods, ModifiedMethod mergeMethod, Project project, MergeCommit mergeCommit, String className) {
         ModifiedMethod leftMethod = leftAndRightMethods.getV1();
         ModifiedMethod rightMethod = leftAndRightMethods.getV2();
 
