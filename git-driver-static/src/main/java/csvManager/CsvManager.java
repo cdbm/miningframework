@@ -53,6 +53,22 @@ public class CsvManager {
         this.givenDataArray_whenConvertToCSV_thenOutputCreated(dataLines, destPath);
     }
 
+    public Boolean hasConflict(File file) throws IOException {
+        if(file.exists()){
+            String lines = "";
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if(line.contains("true")){
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
     public void trimBlankLines(File file) throws IOException {
         if(file.exists()) {
             String lines = "";

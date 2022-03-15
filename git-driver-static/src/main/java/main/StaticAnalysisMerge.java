@@ -27,7 +27,7 @@ public class StaticAnalysisMerge {
     }
 
     public void run() {
-        //MergeManager mergeManager = new MergeManager();
+        MergeManager mergeManager = new MergeManager();
         BuildGenerator buildGenerator = new BuildGenerator();
         CommitManager commitManager = new CommitManager(this.args);
         Project project = new Project("project", System.getProperty("user.dir"));
@@ -69,6 +69,12 @@ public class StaticAnalysisMerge {
 
             RunSootAnalysisOutputProcessor runSootAnalysisOutputProcessor = new RunSootAnalysisOutputProcessor();
             runSootAnalysisOutputProcessor.executeAllAnalyses(miningPath);
+
+            File results = new File(miningPath + "/data/soot-results.csv");
+
+            if(csvManager.hasConflict(results)){
+                mergeManager.revertCommint(mergeCommit.getLeftSHA());
+            }
 
             //System.out.println("Build jar file: " + buildJar);
         } catch (IOException /*| InterruptedException e*/e) {
