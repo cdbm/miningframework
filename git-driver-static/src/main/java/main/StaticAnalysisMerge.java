@@ -13,8 +13,6 @@ import services.outputProcessors.soot.RunSootAnalysisOutputProcessor;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -32,8 +30,6 @@ public class StaticAnalysisMerge {
         CommitManager commitManager = new CommitManager(this.args);
         Project project = new Project("project", System.getProperty("user.dir"));
         ModifiedLinesManager modifiedLinesManager = new ModifiedLinesManager();
-        String miningPath = this.args[5];
-        System.out.println("Mining path: " + miningPath);
 
         try {
 
@@ -44,23 +40,24 @@ public class StaticAnalysisMerge {
 
             if(buildGeneration.exitValue() != 0) {
                 System.out.println("Could not generate a valid build");
+                mergeManager.revertCommint(mergeCommit.getLeftSHA());
                 return;
             }
 
             File buildJar = buildGenerator.getBuildJar();
 
-            File dest = new File(miningPath + "/files/project/" + mergeCommit.getSHA() + "/original-without-dependencies/merge/build.jar");
+            File dest = new File("files/project/" + mergeCommit.getSHA() + "/original-without-dependencies/merge/build.jar");
             FileUtils.copyFile(buildJar, dest);
 
             List<CollectedMergeMethodData> collectedMergeMethodDataList = modifiedLinesManager.collectData(project, mergeCommit);
             CsvManager csvManager = new CsvManager();
-            csvManager.transformCollectedDataIntoCsv(collectedMergeMethodDataList, miningPath);
+            csvManager.transformCollectedDataIntoCsv(collectedMergeMethodDataList, ".");
             GenerateSootInputFilesOutputProcessor generateSootInputFilesOutputProcessor = new GenerateSootInputFilesOutputProcessor();
-            generateSootInputFilesOutputProcessor.convertToSootScript(miningPath);
+            generateSootInputFilesOutputProcessor.convertToSootScript(".");
 
             for(CollectedMergeMethodData data : collectedMergeMethodDataList) {
-                File left = new File(miningPath + "/files/"+ data.getProject().getName() + "/" + mergeCommit.getSHA() + "/changed-methods/" + data.getClassName() +"/" + data.getMethodSignature() + "/left-right-lines.csv");
-                File right = new File(miningPath + "/files/"+ data.getProject().getName() + "/" + mergeCommit.getSHA() + "/changed-methods/" + data.getClassName() +"/" + data.getMethodSignature() + "/right-left-lines.csv");
+                File left = new File("./files/"+ data.getProject().getName() + "/" + mergeCommit.getSHA() + "/changed-methods/" + data.getClassName() +"/" + data.getMethodSignature() + "/left-right-lines.csv");
+                File right = new File("./files/"+ data.getProject().getName() + "/" + mergeCommit.getSHA() + "/changed-methods/" + data.getClassName() +"/" + data.getMethodSignature() + "/right-left-lines.csv");
 
                 csvManager.trimBlankLines(left);
                 csvManager.trimBlankLines(right);
@@ -68,15 +65,14 @@ public class StaticAnalysisMerge {
 
 
             RunSootAnalysisOutputProcessor runSootAnalysisOutputProcessor = new RunSootAnalysisOutputProcessor();
-            runSootAnalysisOutputProcessor.executeAllAnalyses(miningPath);
+            runSootAnalysisOutputProcessor.executeAllAnalyses(".");
 
-            File results = new File(miningPath + "/data/soot-results.csv");
+            File results = new File("./data/soot-results.csv");
 
             if(csvManager.hasConflict(results)){
                 mergeManager.revertCommint(mergeCommit.getLeftSHA());
             }
 
-            //System.out.println("Build jar file: " + buildJar);
         } catch (IOException /*| InterruptedException e*/e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

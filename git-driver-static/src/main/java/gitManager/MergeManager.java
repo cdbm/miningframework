@@ -51,6 +51,9 @@ public class MergeManager {
         System.out.println("==== REVERTING MERGE ====");
         Process proc  = Runtime.getRuntime().exec("git reset " + baseCommit);
         this.watchProcess(proc);
+
+        Process proc1  = Runtime.getRuntime().exec("git checkout -- . ");
+        this.watchProcess(proc1);
         return proc;
     }
 
