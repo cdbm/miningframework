@@ -1,5 +1,6 @@
 package main;
 
+import DependenciesManager.DependenciesManager;
 import buildManager.BuildGenerator;
 import csvManager.CsvManager;
 import gitManager.CollectedMergeMethodData;
@@ -25,6 +26,7 @@ public class StaticAnalysisMerge {
     }
 
     public void run() {
+        DependenciesManager dependenciesManager = new DependenciesManager();
         MergeManager mergeManager = new MergeManager();
         BuildGenerator buildGenerator = new BuildGenerator();
         CommitManager commitManager = new CommitManager(this.args);
@@ -32,6 +34,7 @@ public class StaticAnalysisMerge {
         ModifiedLinesManager modifiedLinesManager = new ModifiedLinesManager();
 
         try {
+            dependenciesManager.copyAuxFilesToProject(this.args[4]);
 
             MergeCommit mergeCommit = commitManager.buildMergeCommit();
 
@@ -73,9 +76,9 @@ public class StaticAnalysisMerge {
                 mergeManager.revertCommint(mergeCommit.getLeftSHA());
             }
 
-        } catch (IOException /*| InterruptedException e*/e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+            dependenciesManager.deleteAuxFiles(this.args[4]);
+
+        } catch (IOException | InterruptedException /*| InterruptedException e*/e) {
             e.printStackTrace();
         }
     }
