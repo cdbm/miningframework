@@ -82,10 +82,10 @@ public class DependenciesManager {
 
         }
 
-        FileUtils.deleteDirectory(new File("./sootOutput"));
-        FileUtils.deleteDirectory(new File("./data"));
+        //FileUtils.deleteDirectory(new File("./sootOutput"));
+        //FileUtils.deleteDirectory(new File("./data"));
         //FileUtils.deleteDirectory(new File("./files"));
-        FileUtils.delete(new File("./out.txt"));
+        //FileUtils.delete(new File("./out.txt"));
     }
 
 }

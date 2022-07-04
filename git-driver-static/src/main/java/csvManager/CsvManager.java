@@ -71,6 +71,7 @@ public class CsvManager {
 
     public void trimBlankLines(File file) throws IOException {
         if(file.exists()) {
+            System.out.println(file.getAbsolutePath());
             String lines = "";
             try (BufferedReader br = new BufferedReader(new FileReader(file))) {
                 String line;
@@ -85,6 +86,31 @@ public class CsvManager {
             PrintWriter writer = new PrintWriter(file);
             writer.write(lines);
             writer.close();
+        }else{
+            System.out.println("file does not exist at: " + file.getAbsolutePath());
+        }
+    }
+
+    public void trimSpacesAndSpecialChars(File file) throws IOException {
+        if(file.exists()) {
+            System.out.println(file.getAbsolutePath());
+            String lines = "";
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                String line;
+                lines = lines + br.readLine() + "\n";
+                while ((line = br.readLine()) != null) {
+                    line = line.replaceAll(" ", "");
+                    line = line.replaceAll("[+^?<>|]*", "");
+                    System.out.println(line);
+                    lines = lines + line + "\n";
+                }
+            }
+
+            PrintWriter writer = new PrintWriter(file);
+            writer.write(lines);
+            writer.close();
+        }else{
+            System.out.println("file does not exist at: " + file.getAbsolutePath());
         }
     }
 }

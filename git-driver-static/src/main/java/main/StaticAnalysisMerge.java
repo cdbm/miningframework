@@ -28,7 +28,7 @@ public class StaticAnalysisMerge {
     public void run() {
         DependenciesManager dependenciesManager = new DependenciesManager();
         MergeManager mergeManager = new MergeManager();
-        BuildGenerator buildGenerator = new BuildGenerator();
+        BuildGenerator buildGenerator = new BuildGenerator(this.args[5], this.args[6]);
         CommitManager commitManager = new CommitManager(this.args);
         Project project = new Project("project", System.getProperty("user.dir"));
         ModifiedLinesManager modifiedLinesManager = new ModifiedLinesManager();
@@ -55,16 +55,24 @@ public class StaticAnalysisMerge {
             List<CollectedMergeMethodData> collectedMergeMethodDataList = modifiedLinesManager.collectData(project, mergeCommit);
             CsvManager csvManager = new CsvManager();
             csvManager.transformCollectedDataIntoCsv(collectedMergeMethodDataList, ".");
+            csvManager.trimSpacesAndSpecialChars(new File("data/results-with-build-information.csv"));
+
+
             GenerateSootInputFilesOutputProcessor generateSootInputFilesOutputProcessor = new GenerateSootInputFilesOutputProcessor();
             generateSootInputFilesOutputProcessor.convertToSootScript(".");
 
             for(CollectedMergeMethodData data : collectedMergeMethodDataList) {
-                File left = new File("./files/"+ data.getProject().getName() + "/" + mergeCommit.getSHA() + "/changed-methods/" + data.getClassName() +"/" + data.getMethodSignature() + "/left-right-lines.csv");
-                File right = new File("./files/"+ data.getProject().getName() + "/" + mergeCommit.getSHA() + "/changed-methods/" + data.getClassName() +"/" + data.getMethodSignature() + "/right-left-lines.csv");
+                String path = "files/"+ data.getProject().getName() + "/" + mergeCommit.getSHA() + "/changed-methods/" + data.getClassName() +"/" + data.getMethodSignature();
+                path = path.replaceAll(" ", "");
+                path = path.replaceAll("[+^?<>|]*", "");
+                File left = new File( path + "/left-right-lines.csv");
+                File right = new File(path + "/right-left-lines.csv");
 
                 csvManager.trimBlankLines(left);
                 csvManager.trimBlankLines(right);
             }
+
+
 
 
             RunSootAnalysisOutputProcessor runSootAnalysisOutputProcessor = new RunSootAnalysisOutputProcessor();

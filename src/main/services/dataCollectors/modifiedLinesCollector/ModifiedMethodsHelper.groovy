@@ -47,6 +47,7 @@ class ModifiedMethodsHelper {
     }
 
     private List<String> runTextualDiff (File ancestorFile, File targetFile) {
+        System.out.println("Textual diff directory: " + System.getProperty("user.dir"));
         Process textDiff = ProcessRunner.runProcess(".", "diff" ,ancestorFile.getAbsolutePath(), targetFile.getAbsolutePath())
         BufferedReader reader = new BufferedReader(new InputStreamReader(textDiff.getInputStream()))
         def output = reader.readLines()

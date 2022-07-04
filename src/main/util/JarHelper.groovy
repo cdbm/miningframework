@@ -8,7 +8,7 @@ class JarHelper {
     static boolean classExistsInJarFile (File jarFile, String className) {
         JarFile jar = new JarFile(jarFile)
         String wantedEntryName = convertClassNameToEntryName(className)
-
+        System.out.println("Wanted Entry Name: " + wantedEntryName);
         boolean result = false;
         Iterator<JarEntry> jarIterator = jar.entries().iterator()
         while (jarIterator.hasNext() && !result) {

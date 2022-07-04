@@ -49,7 +49,7 @@ public class MergeManager {
 
     public Process revertCommint(String baseCommit) throws IOException {
         System.out.println("==== REVERTING MERGE ====");
-        Process proc  = Runtime.getRuntime().exec("git reset " + baseCommit);
+        Process proc  = Runtime.getRuntime().exec("git reset " + baseCommit + " --quiet");
         this.watchProcess(proc);
 
         Process proc1  = Runtime.getRuntime().exec("git checkout -- . ");
